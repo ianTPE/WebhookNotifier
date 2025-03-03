@@ -56,9 +56,8 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client
-  const port = 5000;
+  // Use PORT environment variable with fallback to 10000 (Render's default)
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 10000;
   server.listen({
     port,
     host: "0.0.0.0",
@@ -66,4 +65,8 @@ app.use((req, res, next) => {
   }, () => {
     log(`serving on port ${port}`);
   });
+  
+  // Set keepAliveTimeout and headersTimeout to avoid connection issues
+  server.keepAliveTimeout = 120000; // 120 seconds
+  server.headersTimeout = 120000; // 120 seconds
 })();
